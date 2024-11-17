@@ -12,9 +12,9 @@ const sequelize = new Sequelize(
 );
 
 fs.readdirSync(__dirname)
-    .filter((file) => file !== 'index.js' && file.endsWith('.js')) // Фильтрация по имени и расширению
+    .filter((file) => file !== 'index.js' && file.endsWith('.js'))
     .forEach((file) => {
-        const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes); // Подключение модели
+        const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
         db[model.name] = model; // Сохранение модели в объекте db
     });
 
@@ -23,8 +23,6 @@ Object.keys(db).forEach((modelName) => {
         db[modelName].associate(db);
     }
 });
-
-// Экспорт соединения и всех моделей
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

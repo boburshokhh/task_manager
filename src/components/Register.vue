@@ -2,37 +2,94 @@
 import AuthenticationService from "@/services/AuthenticationService.js";
 
 export default {
-  data(){
-    return{
-      mail:"abc",
-      password:"123"
-    }
+  data() {
+    return {
+      email: "",
+      password: "",
+      message: null,  // Объединяем error и greenToaste в одно сообщение
+      isLoading: false,  // Добавляем индикатор загрузки
+    };
   },
-  methods:{
-    async register(){
-      const response = await  AuthenticationService.register({
-        email:this.email,
-        password:this.password
-      })
-      console.log(response.data)
-    }
-  }
-}
+  methods: {
+    async register() {
+      this.isLoading = true;
+      this.message = null; // Очищаем предыдущее сообщение
+      try {
+        const response = await AuthenticationService.register({
+          email: this.email,
+          password: this.password,
+        });
+        this.message = { text: response.data.message, type: "success" };
+      } catch (error) {
+        this.message = { text: error.response?.data?.error || "Unknown error", type: "error" };
+      } finally {
+        this.isLoading = false;
+      }
+    },
+  },
+  computed: {
+    isFormValid() {
+      return this.email && this.password && !this.isLoading;
+    },
+  },
+};
 </script>
 
 <template>
-  <div>
-    <h1>Register</h1>
-    <div>
-      <input type="email" v-model="mail" name="email" placeholder="email">
-      <br>
-      <input type="password" v-model="password" name="password" placeholder="password">
-      <br>
-      <button @click="register">Save</button>
-    </div>
-  </div>
+  <v-container class="d-flex justify-center align-center fill-height">
+    <v-card class="pa-5" elevation="10" width="400">
+      <v-card-title class="text-h5 text-center">Register</v-card-title>
+      <v-card-text>
+        <v-form>
+          <v-text-field
+              v-model="email"
+              :disabled="isLoading"
+              label="Email"
+              type="email"
+              :counter="10"
+              autocomplete="off"
+          ></v-text-field>
+          <v-text-field
+              v-model="password"
+              label="Password"
+              type="password"
+              :disabled="isLoading"
+              outlined
+              dense
+              autocomplete="off"
+          />
+        </v-form>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn
+            color="primary"
+            block
+            :disabled="!isFormValid || isLoading"
+            @click="register"
+        >
+          Save
+        </v-btn>
+      </v-card-actions>
+      <v-alert
+          v-if="message"
+          :type="message.type"
+          outlined
+          class="mt-3"
+      >
+        <span v-html="message.text"></span>
+      </v-alert>
+    </v-card>
+  </v-container>
 </template>
 
-<style scoped>
-
+<style >
+.error {
+  color: red;
+}
+.v-container {
+  min-height: 100vh;
+}
+.success {
+  color: green;
+}
 </style>
