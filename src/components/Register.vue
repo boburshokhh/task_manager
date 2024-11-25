@@ -36,51 +36,58 @@ export default {
 </script>
 
 <template>
-  <v-container class="d-flex justify-center align-center fill-height">
-    <v-card class="pa-5" elevation="10" width="400">
-      <v-card-title class="text-h5 text-center">Register</v-card-title>
-      <v-card-text>
-        <v-form>
-          <v-text-field
-              v-model="email"
-              :disabled="isLoading"
-              label="Email"
-              type="email"
-              :counter="10"
-              autocomplete="off"
-          ></v-text-field>
-          <v-text-field
-              v-model="password"
-              label="Password"
-              type="password"
-              :disabled="isLoading"
+  <v-container class="fill-height" fluid>
+    <v-row justify="center" align="center">
+      <v-col cols="12" md="6">
+        <v-card class="pa-5" elevation="10">
+          <v-card-title class="text-h5 text-center">Register</v-card-title>
+          <v-card-text>
+            <v-form>
+              <v-text-field
+                  v-model="email"
+                  :disabled="isLoading"
+                  label="Email"
+                  type="email"
+                  :counter="10"
+                  autocomplete="off"
+                  outlined
+                  dense
+              ></v-text-field>
+              <v-text-field
+                  v-model="password"
+                  label="Password"
+                  type="password"
+                  :disabled="isLoading"
+                  outlined
+                  dense
+                  autocomplete="off"
+              />
+            </v-form>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+                color="primary"
+                block
+                :disabled="!isFormValid || isLoading"
+                @click="register"
+            >
+              Save
+            </v-btn>
+          </v-card-actions>
+          <v-alert
+              v-if="message"
+              :type="message.type"
               outlined
-              dense
-              autocomplete="off"
-          />
-        </v-form>
-      </v-card-text>
-      <v-card-actions>
-        <v-btn
-            color="primary"
-            block
-            :disabled="!isFormValid || isLoading"
-            @click="register"
-        >
-          Save
-        </v-btn>
-      </v-card-actions>
-      <v-alert
-          v-if="message"
-          :type="message.type"
-          outlined
-          class="mt-3"
-      >
-        <span v-html="message.text"></span>
-      </v-alert>
-    </v-card>
+              class="mt-3"
+          >
+            <span v-html="message.text"></span>
+          </v-alert>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
+
 
 <style >
 .error {

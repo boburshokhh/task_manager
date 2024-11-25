@@ -2,27 +2,16 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 import { createVuetify } from 'vuetify';
-import { VCard, VCardTitle, VForm, VTextField, VBtn, VAlert,VToolbar,
-    VAppBarNavIcon,
-    VToolbarTitle,
-    VSpacer,
-    VIcon, } from 'vuetify/components';
+import * as directives from 'vuetify/directives'; // Импорт директив
+import * as components from 'vuetify/components'; // Импорт всех компонентов
 import 'vuetify/styles';
 
 
 const vuetify = createVuetify({
     components: {
-        VCard,
-        VCardTitle,
-        VForm,
-        VTextField,
-        VBtn,
-        VAlert, VToolbar,
-        VAppBarNavIcon,
-        VToolbarTitle,
-        VSpacer,
-        VIcon,
+        ...components,
     },
+    directives,
 });
 
 const app = createApp(App);

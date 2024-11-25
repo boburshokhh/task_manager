@@ -1,3 +1,6 @@
+const Promise = require('bluebird')
+const bcrypt = Promise.promisifyAll(require('bcrypt-nodejs'))
+
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
         email: {
@@ -6,6 +9,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         password: DataTypes.STRING
     });
+    User.prototype.comparePassword = (password) =>{
+        return bcrypt.compareAsync(candiat)
+    }
 
-    return User; // Верните модель, чтобы она могла быть использована в других модулях
+    return User;
 };
