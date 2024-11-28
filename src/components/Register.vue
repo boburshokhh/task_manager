@@ -1,27 +1,39 @@
 <script>
 import AuthenticationService from "@/services/AuthenticationService.js";
+import { useRouteStore } from "@/store/index.js";
 
 export default {
   data() {
     return {
       email: "",
       password: "",
-      message: null,  // Объединяем error и greenToaste в одно сообщение
-      isLoading: false,  // Добавляем индикатор загрузки
+      message: null,
+      isLoading: false,
     };
+  },
+  setup() {
+    const routeStore = useRouteStore(); // Вызываем один раз
+    return { routeStore };
   },
   methods: {
     async register() {
       this.isLoading = true;
-      this.message = null; // Очищаем предыдущее сообщение
+      this.message = null;
+
       try {
         const response = await AuthenticationService.register({
           email: this.email,
           password: this.password,
         });
+        console.log("response.data.User.token:",response.data.user.token)
         this.message = { text: response.data.message, type: "success" };
+        this.routeStore.setToken(response.data?.user?.token);
+
       } catch (error) {
-        this.message = { text: error.response?.data?.error || "Unknown error", type: "error" };
+        this.message = {
+          text: error.response?.data?.error || "Unknown error",
+          type: "error",
+        };
       } finally {
         this.isLoading = false;
       }
@@ -31,9 +43,10 @@ export default {
     isFormValid() {
       return this.email && this.password && !this.isLoading;
     },
-  },
+  }
 };
 </script>
+
 
 <template>
   <v-container class="fill-height" fluid>

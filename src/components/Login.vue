@@ -1,41 +1,63 @@
 <script>
-import AuthenticationService from '@/services/AuthenticationService'
+import AuthenticationService from '@/services/AuthenticationService';
+import { useRouteStore } from '../store/index.js'; // Подключаем стор Pinia
+import { watch } from 'vue';  // Импортируем watch из Vue
 
 export default {
-  data () {
+  data() {
     return {
       email: '',
       password: '',
-      error: null
-    }
+      error: null,
+      isLoading: false,
+      message: null
+    };
+  },
+  setup() {
+    const store = useRouteStore();
+
+    watch(
+        () => store.isLoggedIn, // Следим за isLoggedIn в store
+        (newValue, oldValue) => {
+          console.log('isLoggedIn changed:', newValue);
+        }
+    );
+
+    return { store };
   },
   methods: {
-   async login () {
-     this.isLoading=true
-      this.message = null; // Очищаем предыдущее сообщение
+    async login() {
+      this.isLoading = true;
+      this.message = null;
+
       try {
         const response = await AuthenticationService.login({
           email: this.email,
           password: this.password,
         });
-        this.message = { text: response.data.message, type: "success" };
+
+        this.store.setToken(response.data.User.token);
+        this.message = { text: response.data.message, type: 'success' };
       } catch (error) {
-        this.message = { text: error.response?.data?.error || "Unknown error", type: "error" };
+        this.message = {
+          text: error.response?.data?.error || 'Unknown error',
+          type: 'error',
+        };
       } finally {
         this.isLoading = false;
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <template>
-  <v-container class="fill-height" fluid>
+  <v-container class="fill-height" fluid v-if="!store.isLoggedIn"  >
     <v-row justify="center" align="center">
       <v-col cols="12" md="6">
         <v-card class="pa-4" elevation="2">
           <v-card-title class="text-h5">Login</v-card-title>
-          <v-card-text>
+          <v-card-text >
             <v-text-field
                 label="Email"
                 v-model="email"
@@ -50,14 +72,16 @@ export default {
                 dense
                 class="mt-4"
             ></v-text-field>
-            <div class="text-danger mt-4" v-html="error" />
+            <div
+                v-if="message"
+                :class="message.type === 'error' ? 'text-danger' : 'text-success'"
+                class="mt-4"
+            >
+              {{ message.text }}
+            </div>
           </v-card-text>
           <v-card-actions>
-            <v-btn
-                block
-                color="primary"
-                @click="login"
-            >
+            <v-btn block color="primary" @click="login" :loading="isLoading">
               Login
             </v-btn>
           </v-card-actions>
@@ -68,5 +92,4 @@ export default {
 </template>
 
 <style scoped>
-
 </style>

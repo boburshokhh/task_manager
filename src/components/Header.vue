@@ -1,11 +1,16 @@
 <script >
+ import { useRouteStore } from '../store/index.js';
+ import {watch} from "vue"; // Подключаем стор Pinia
   export default {
     methods:{
       navigateTo(path){
         this.$router.push(path.name)
       }
-
-    }
+    },
+    setup() {
+      const store = useRouteStore();
+      return { store };
+    },
   }
 </script>
 <template>
@@ -17,10 +22,10 @@
 <!--      </v-btn>-->
 <!--    </v-toolbar-items>-->
     <v-toolbar-items>
-      <v-btn flat @click="navigateTo({name:'login'})">
+      <v-btn  v-if="!store.isLoggedIn"  flat @click="navigateTo({name:'login'})">
         LogIn
       </v-btn>
-      <v-btn flat @click="navigateTo({name:'register'})">
+      <v-btn  v-if="!store.isLoggedIn"  flat @click="navigateTo({name:'register'})">
         Sing Up
       </v-btn>
     </v-toolbar-items>

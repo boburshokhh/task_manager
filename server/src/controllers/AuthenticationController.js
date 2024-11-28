@@ -1,7 +1,7 @@
 const { User } = require('../models');
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
-
+const bcrypt = require('bcrypt');
 
 function jwtSingUser(user ){
         const ONE_WEEK = 60*60*24*7;
@@ -9,7 +9,9 @@ function jwtSingUser(user ){
             expiresIn:ONE_WEEK
         })
 }
+
 module.exports = {
+    jwtSingUser,
     async register(email, password) {
         try {
             const user = await User.create({ email, password });
@@ -23,22 +25,26 @@ module.exports = {
     async login(email, password) {
         try {
             const user = await User.findOne({
-                where: { email: email }
+                where: {email: email}
             });
 
             if (!user) {
-                return null;
+                throw new Error('Пользователь с таким email не найден.');
             }
 
-            const isPasswordValid = password === user.password;
+            // Проверка пароля
+            const isPasswordValid = await bcrypt.compare(password, user.password);
             if (!isPasswordValid) {
-                return null;
+                throw new Error('Неправильный пароль.');
             }
 
-            return user.toJSON();
+            // Генерация токена
+            const userJson = user.toJSON();
+            const token = jwtSingUser(userJson);
+            return {"user":userJson, token};
         } catch (err) {
             console.error(err);
-            throw new Error('Ошибка при попытке входа.');
+            throw new Error(err.message || 'Ошибка при попытке входа.');
         }
-    },
+    }
 };
