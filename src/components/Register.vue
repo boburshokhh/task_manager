@@ -25,7 +25,6 @@ export default {
           email: this.email,
           password: this.password,
         });
-        console.log("response.data.User.token:",response.data.user.token)
         this.message = { text: response.data.message, type: "success" };
         this.routeStore.setToken(response.data?.user?.token);
 
