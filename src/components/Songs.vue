@@ -1,13 +1,27 @@
 <script>
+import Panel from "@/components/Panel.vue";
+import SongsService from "../services/SongsService"
 export default {
-name: "Songs"
-}
+  name: "Songs",
+  components: {
+    Panel,
+  },
+  data() {
+    return {
+      songs: null
+    };
+  },
+  async mounted(){
+    let songs = await SongsService.index()
+    this.songs = songs.data.data
+  }
+};
 </script>
 
 <template>
-  $END$
+  <panel :title="'Songs'">
+    <div v-for="song in songs" :key="song.id">
+      {{ song.title }}
+    </div>
+  </panel>
 </template>
-
-<style scoped>
-
-</style>

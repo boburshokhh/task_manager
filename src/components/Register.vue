@@ -1,6 +1,7 @@
 <script>
 import AuthenticationService from "@/services/AuthenticationService.js";
 import { useRouteStore } from "@/store/index.js";
+import Panel from "@/components/Panel.vue";
 
 export default {
   data() {
@@ -10,6 +11,9 @@ export default {
       message: null,
       isLoading: false,
     };
+  },
+  components:{
+    Panel
   },
   setup() {
     const routeStore = useRouteStore(); // Вызываем один раз
@@ -48,12 +52,8 @@ export default {
 
 
 <template>
-  <v-container class="fill-height" fluid>
-    <v-row justify="center" align="center">
-      <v-col cols="12" md="6">
-        <v-card class="pa-5" elevation="10">
-          <v-card-title class="text-h5 text-center">Register</v-card-title>
-          <v-card-text>
+  <panel :title="'Register'">
+    <v-card-text>
             <v-form>
               <v-text-field
                   v-model="email"
@@ -76,15 +76,15 @@ export default {
               />
             </v-form>
           </v-card-text>
-          <v-card-actions>
-            <v-btn
+    <v-card-actions>
+      <v-btn
                 color="primary"
                 block
                 :disabled="!isFormValid || isLoading"
                 @click="register"
             >
               Save
-            </v-btn>
+      </v-btn>
           </v-card-actions>
           <v-alert
               v-if="message"
@@ -94,10 +94,7 @@ export default {
           >
             <span v-html="message.text"></span>
           </v-alert>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+          </panel>
 </template>
 
 

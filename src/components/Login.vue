@@ -2,7 +2,7 @@
 import AuthenticationService from '@/services/AuthenticationService';
 import { useRouteStore } from '../store/index.js'; // Подключаем стор Pinia
 import { watch } from 'vue';  // Импортируем watch из Vue
-
+import Panel from "@/components/Panel.vue";
 export default {
   data() {
     return {
@@ -12,6 +12,9 @@ export default {
       isLoading: false,
       message: null
     };
+  },
+  components:{
+    Panel
   },
   setup() {
     const store = useRouteStore();
@@ -52,11 +55,7 @@ export default {
 </script>
 
 <template>
-  <v-container class="fill-height" fluid v-if="!store.isLoggedIn"  >
-    <v-row justify="center" align="center">
-      <v-col cols="12" md="6">
-        <v-card class="pa-4" elevation="2">
-          <v-card-title class="text-h5">Login</v-card-title>
+  <panel :title ="'LogIn'">
           <v-card-text >
             <v-text-field
                 label="Email"
@@ -85,10 +84,7 @@ export default {
               Login
             </v-btn>
           </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+  </panel>
 </template>
 
 <style scoped>

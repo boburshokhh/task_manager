@@ -6,6 +6,7 @@ import { createVuetify } from 'vuetify';
 import * as directives from 'vuetify/directives';
 import * as components from 'vuetify/components';
 import 'vuetify/styles';
+import * as mdiIcons from '@mdi/js';
 
 router.afterEach((to, from) => {
     const routeStore = useRouteStore();
@@ -17,6 +18,19 @@ const vuetify = createVuetify({
         ...components,
     },
     directives,
+    icons: {
+        defaultSet: 'mdi',
+        aliases: {
+            magnify: mdiIcons.mdiMagnify,
+            heart: mdiIcons.mdiHeart,
+            dotsVertical: mdiIcons.mdiDotsVertical,
+        },
+        sets: {
+            mdi: {
+                component: 'svg', // Использование SVG иконок
+            },
+        },
+    },
 });
 
 const app = createApp(App);
